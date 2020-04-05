@@ -7,6 +7,7 @@ import torchvision.models as models
 import logging
 import os
 import hydra
+from hydra.utils import instantiate
 from omegaconf import DictConfig
 from torch.utils.data import DataLoader
 from poutyne.framework import Experiment, EarlyStopping
@@ -32,13 +33,12 @@ def main(cfg: DictConfig) -> None:
         transforms.ToTensor()
     ])
 
-    train = DataLoader(data.CIFAR10(root="..\..\data", train=True, download=True, transform=transform), batch_size=cfg.trainer.batch_size)
-    val = DataLoader(data.CIFAR10(root="..\..\data", train=False, download=True, transform=transform), batch_size=cfg.trainer.batch_size)
+    train = DataLoader(data.CIFAR10(root="..\..\data", train=True, download=True, transform=transform), batch_size=cfg.data_loader.batch_size)
+    val = DataLoader(data.CIFAR10(root="..\..\data", train=False, download=True, transform=transform), batch_size=cfg.data_loader.batch_size)
 
+    network = instantiate(cfg.model)
 
-    network = models.resnet18()
-
-    optimizer = optim.Adam(network.parameters(), lr=cfg.trainer.learning_rate)
+    optimizer = instantiate(cfg.optimizer, network.parameters())
     loss = nn.CrossEntropyLoss()
 
     saving_directory = os.path.join(hydra.utils.get_original_cwd(), cfg.poutyne.root_logging_directory,

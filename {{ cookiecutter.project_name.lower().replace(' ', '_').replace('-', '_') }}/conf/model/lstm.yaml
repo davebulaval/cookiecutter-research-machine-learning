@@ -1,3 +1,0 @@
-model:
-  hidden_state_dim: 300
-  num_hidden_layer: 1
