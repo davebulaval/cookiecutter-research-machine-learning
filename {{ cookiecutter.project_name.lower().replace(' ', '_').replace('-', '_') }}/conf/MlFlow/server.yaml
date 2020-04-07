@@ -1,0 +1,7 @@
+MlFlow:
+  class: src.models.MLflow_logger.ServerMlFlowWriter
+  params:
+    experiment_name: CookiCutterDemo
+    tracking_uri: http://132.203.120.10:5000/
+    batch_granularity: False
+    same_run_logging: True
