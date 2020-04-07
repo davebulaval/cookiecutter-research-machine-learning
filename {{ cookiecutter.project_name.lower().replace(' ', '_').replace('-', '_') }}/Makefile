@@ -79,12 +79,12 @@ init_git:
 ifeq (True,$(HAS_GIT))
 	@echo ">>> Init of the git repository."
 	@git init -q
-	@git remote add origin $(GIT_REMOTE_URL)
 	@git add .
 	@git commit -m "initial commit"
+	@hub create
 	@git push -u origin master
 else
-	$(error Git not install.)
+	$(error Git or hub not installed.)
 endif
 
 init_dvc:

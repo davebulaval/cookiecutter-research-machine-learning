@@ -16,10 +16,8 @@ if conda_env_creation:
         subprocess.run(["make", "init_environment"], check=True)
     except subprocess.CalledProcessError:
         sys.exit(1)
-try:
-    subprocess.run(["make", "init_git"], check=True)
-except subprocess.CalledProcessError:
-    sys.exit(1)
+
+
 
 if data_version_control:
     try:
