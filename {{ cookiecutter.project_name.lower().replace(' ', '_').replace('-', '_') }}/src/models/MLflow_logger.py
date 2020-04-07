@@ -13,18 +13,15 @@ warnings.filterwarnings('ignore')
 class MlFlowWriter(Logger):
     def __init__(self,
                  experiment_name: str,
-                 config_params: Union[Dict, DictConfig, ListConfig],
-                 root_path=Union[str, None],
-                 tracking_path: str = 'mlruns',
+                 tracking_path: str,
                  batch_granularity: bool = False,
                  same_run_logging: bool = True) -> None:
         super().__init__(batch_granularity=batch_granularity)
+        set_tracking_uri(tracking_path)
+
         self.same_run_logging = same_run_logging
-        relative_path = os.path.join(root_path, tracking_path) if root_path is not None else tracking_path
-        set_tracking_uri('file:{}'.format(relative_path))
         self._handle_experiment_id(experiment_name)
         self.run_id = start_run(experiment_id=self.experiment_id).info.run_id
-        self.log_config_params(config_params)
 
     def log_config_params(self, params: Union[Dict, DictConfig, ListConfig]) -> None:
         if isinstance(params, Dict):
@@ -87,3 +84,32 @@ class MlFlowWriter(Logger):
             self.experiment_id = create_experiment(experiment_name)
         except MlflowException:
             self.experiment_id = get_experiment_by_name(experiment_name).experiment_id
+
+
+class LocalMlFlowWriter(MlFlowWriter):
+    def __init__(self,
+                 root_path: str,
+                 local_path: str,
+                 experiment_name: str,
+                 batch_granularity: bool = False,
+                 same_run_logging: bool = True) -> None:
+
+        local_path = os.path.join(root_path, local_path) if root_path is not None else local_path
+        full_tracking_path = 'file:{}'.format(local_path)
+
+        super().__init__(experiment_name=experiment_name,
+                         tracking_path=full_tracking_path,
+                         batch_granularity=batch_granularity,
+                         same_run_logging=same_run_logging)
+
+class ServerMlFlowWriter(MlFlowWriter):
+    def __init__(self,
+                 experiment_name: str,
+                 tracking_uri: str,
+                 batch_granularity: bool = False,
+                 same_run_logging: bool = True) -> None:
+
+        super().__init__(experiment_name=experiment_name,
+                         tracking_path=tracking_uri,
+                         batch_granularity = batch_granularity,
+                         same_run_logging = same_run_logging)

@@ -9,12 +9,13 @@ setting:
 defaults:
   - optimizer: SGD
   - model: resnet18
+  - MlFlow: server
   - hydra/job_logging: colorlog #to init plugin
   - hydra/hydra_logging: colorlog
 
 # Trainer
 trainer:
-  num_epochs: 120
+  num_epochs: 10
   patience: 30
 
 # Infra configs
