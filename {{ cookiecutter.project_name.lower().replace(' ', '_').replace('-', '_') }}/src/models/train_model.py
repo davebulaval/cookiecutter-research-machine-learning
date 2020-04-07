@@ -19,6 +19,7 @@ from src.models.MLflow_logger import MlFlowWriter
 log = logging.getLogger(__name__)
 
 
+
 @hydra.main(config_path="../../conf/config.yaml", strict=False)
 def main(cfg: DictConfig) -> None:
     log.info("Init of the training")
@@ -27,8 +28,8 @@ def main(cfg: DictConfig) -> None:
 
     # cfg.MlFlow.params["root_path"] = hydra.utils.get_original_cwd()
     writer_callback = instantiate(cfg.MlFlow)
-
     writer_callback.log_config_params(cfg)
+
 
     log.info("Loading of the dataset and embedding model")
     transform = transforms.Compose([
