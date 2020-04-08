@@ -68,22 +68,6 @@ tests:
 	pytests tests
 
 ## Set up python interpreter environment
-init_conda:
-ifeq (False, $(HAS_CONDA))
-
-ifeq (True,$(HAS_CONDA))
-	@echo ">>> Detected conda, creating conda environment."
-	@conda create -n $(PROJECT_NAME) python=$(PYTHON_VERSION) msgpack-python pylint anaconda -y -q
-	@conda install pytorch torchvision cudatoolkit=10.1 -c pytorch -y
-	@conda run -n $(PROJECT_NAME) python -m pip install --upgrade pip -q
-	@while read -r requirement; do \
-	    echo $(requirement); \
-	    conda run -n $(PROJECT_NAME) python -m pip install --upgrade "$$requirement" -q; \
-	done < requirements.txt
-else
-	$(error Conda not install.)
-endif
-
 init_venv:
 	@python3 -m venv ./venv
 	@source ./venv/bin/activate
