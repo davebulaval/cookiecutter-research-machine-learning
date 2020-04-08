@@ -21,5 +21,9 @@
   "create_conda_env": [
     "Yes",
     "No"
+  ],
+  "init_git": [
+    "Yes",
+    "No"	
   ]
 }

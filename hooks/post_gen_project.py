@@ -4,7 +4,8 @@ import sys
 
 conda_env_creation = True if "{{ cookiecutter.create_conda_env }}" == "Yes" else False
 data_version_control = True if "{{ cookiecutter.DVC_setting }}" == "Yes" else False
-
+init_git = True if "{{ cookiecutter.init_git }}" == "Yes" else False
+ 
 
 if conda_env_creation:
     try:
@@ -12,7 +13,11 @@ if conda_env_creation:
     except subprocess.CalledProcessError:
         sys.exit(1)
 
-
+if init_git:
+    try:
+        subprocess.run(["make", "init_git"], check=True)
+    except subprocess.CalledProcessError:
+        sys.exit(1)
 
 if data_version_control:
     try:
