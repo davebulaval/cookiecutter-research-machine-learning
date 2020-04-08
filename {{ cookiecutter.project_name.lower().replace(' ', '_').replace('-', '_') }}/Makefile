@@ -95,9 +95,6 @@ else
 	$(error DVC not install.)
 endif
 
-test_remote_url:
-	@echo ">>> Testing remote URL"
-	@git ls-remote $(GIT_REMOTE_URL)
 
 ## Test python environment is setup correctly
 test_environment:
