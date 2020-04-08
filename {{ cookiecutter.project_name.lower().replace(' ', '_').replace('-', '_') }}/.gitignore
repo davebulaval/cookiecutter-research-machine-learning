@@ -87,3 +87,13 @@ target/
 
 # Mypy cache
 .mypy_cache/
+
+# Outputs of runs
+src/models/outputs/
+src/models/mlruns/
+src/models/logging/
+
+
+
+# Virtual environment
+venv/
