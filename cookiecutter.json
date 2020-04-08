@@ -18,7 +18,7 @@
     "3.8",
     "newest"
   ],
-  "create_conda_env": [
+  "create_python_venv": [
     "Yes",
     "No"
   ],

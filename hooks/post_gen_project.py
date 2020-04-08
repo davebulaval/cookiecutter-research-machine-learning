@@ -2,14 +2,13 @@
 import subprocess
 import sys
 
-conda_env_creation = True if "{{ cookiecutter.create_conda_env }}" == "Yes" else False
+venv_env_creation = True if "{{ cookiecutter.create_python_venv }}" == "Yes" else False
 data_version_control = True if "{{ cookiecutter.DVC_setting }}" == "Yes" else False
 init_git = True if "{{ cookiecutter.init_git }}" == "Yes" else False
- 
 
-if conda_env_creation:
+if venv_env_creation:
     try:
-        subprocess.run(["make", "init_environment"], check=True)
+        subprocess.run(["make", "init_venv"], check=True)
     except subprocess.CalledProcessError:
         sys.exit(1)
 

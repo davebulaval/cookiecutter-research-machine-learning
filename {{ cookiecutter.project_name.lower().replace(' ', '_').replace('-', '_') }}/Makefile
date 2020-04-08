@@ -24,6 +24,12 @@ else
 	HAS_GIT=True
 endif
 
+ifeq (,$(shell which hub))
+	HAS_HUB=False
+else
+	HAS_HUB=True
+endif
+
 ifeq (,$(shell which dvc))
 	HAS_DVC=False
 else
@@ -32,6 +38,8 @@ endif
 #################################################################################
 # COMMANDS                                                                      #
 #################################################################################
+
+
 
 ## Install Python Dependencies
 requirements: test_environment
@@ -60,7 +68,9 @@ tests:
 	pytests tests
 
 ## Set up python interpreter environment
-init_environment:
+init_conda:
+ifeq (False, $(HAS_CONDA))
+
 ifeq (True,$(HAS_CONDA))
 	@echo ">>> Detected conda, creating conda environment."
 	@conda create -n $(PROJECT_NAME) python=$(PYTHON_VERSION) msgpack-python pylint anaconda -y -q
@@ -74,26 +84,42 @@ else
 	$(error Conda not install.)
 endif
 
+init_venv:
+@python3 -m venv ./venv
+@source ./venv/bin/activate
+@python3 -m pip install -U pip setuptools wheel
+@python3 -m pip install -r requirements.txt
+
 init_git:
-ifeq (True,$(HAS_GIT))
-	@echo ">>> Init of the git repository."
-	@git init -q
-	@git add .
-	@git commit -m "initial commit"
-	@hub create
-	@git push -u origin master
-else
-	$(error Git or hub not installed.)
+ifeq (False,$(HAS_GIT))
+	@echo ">>> Git not found, installing through apt"
+	@apt-get install git
+endif
+ifeq (False,$(HAS_HUB))
+	@echo ">>> hub not found, installing through snap"
+	@apt-get install snap
+	@snap install hub
 endif
 
+@echo ">>> Init of the git repository."
+@git init -q
+@git add .
+@git commit -m "initial commit"
+@hub create
+@git push -u origin master
+
+
 init_dvc:
-ifeq (True,$(HAS_DVC))
-	@echo ">>> Init of DVC"
-	@dvc init -q
-	@dvc add data/raw -q
-else
-	$(error DVC not install.)
+ifeq (False, $(HAS_DVC))
+	@echo ">>> DVC not found, installing"
+	@pip3 install dvc
 endif
+@echo ">>> Init of DVC"
+@dvc init -q
+@dvc add data/raw -q
+
+
+
 
 
 ## Test python environment is setup correctly
