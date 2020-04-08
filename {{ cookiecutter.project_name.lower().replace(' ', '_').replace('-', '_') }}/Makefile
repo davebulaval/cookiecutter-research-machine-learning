@@ -11,7 +11,6 @@ else
 	PYTHON_VERSION={{ cookiecutter.python_interpreter }}
 endif
 
-GIT_REMOTE_URL = {{ cookiecutter.git_remote_url }}
 
 ifeq (,$(shell which conda))
     HAS_CONDA=False
