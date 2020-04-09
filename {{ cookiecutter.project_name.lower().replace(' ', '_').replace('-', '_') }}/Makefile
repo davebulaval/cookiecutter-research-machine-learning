@@ -11,12 +11,11 @@ else
 	PYTHON_VERSION={{ cookiecutter.python_interpreter }}
 endif
 
-
-ifeq (,$(shell which conda))
-    HAS_CONDA=False
+ifeq(,$(shell, dpkg -l | grep python3-venv)
+	HAS_VENV=False
 else
-    HAS_CONDA=True
-endif
+	HAS_VENV=True
+
 
 ifeq (,$(shell which git))
 	HAS_GIT=False
@@ -69,6 +68,11 @@ tests:
 
 ## Set up python interpreter environment
 init_venv:
+ifeq(False, $(HAS_VENV))
+	@echo ">>> venv not found, installing through apt"
+	@apt-get install python3-venv
+endif
+
 	python3 -m venv ./venv
 	./venv/bin/python3 -m pip install -U pip setuptools wheel
 	./venv/bin/python3 -m pip install -r requirements.txt
