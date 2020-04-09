@@ -11,10 +11,11 @@ else
 	PYTHON_VERSION={{ cookiecutter.python_interpreter }}
 endif
 
-ifeq(,$(shell, dpkg -l | grep python3-venv)
+ifeq (,$(shell dpkg -l | grep python3-venv))
 	HAS_VENV=False
 else
 	HAS_VENV=True
+endif
 
 
 ifeq (,$(shell which git))
@@ -67,8 +68,7 @@ tests:
 	pytests tests
 
 ## Set up python interpreter environment
-init_venv:
-ifeq(False, $(HAS_VENV))
+ifeq (False, $(HAS_VENV))
 	@echo ">>> venv not found, installing through apt"
 	@apt-get install python3-venv
 endif
