@@ -83,24 +83,19 @@ ifeq (False,$(HAS_HUB))
 	@apt-get install snap
 	@snap install hub
 endif
-
-	echo ">>> Init of the git repository."
-	git init -q
-	git add .
-	git commit -m "initial commit"
-	hub create
-	git push -u origin master
-
-
-init_dvc:
 ifeq (False, $(HAS_DVC))
 	@echo ">>> DVC not found, installing"
 	@pip3 install dvc
 endif
-	echo ">>> Init of DVC"
+
+	echo ">>> Init of the git and dvc repository."
+	git init -q
+	git add .
 	dvc init -q
 	dvc add data/raw -q
-
+	git commit -m "initial commit"
+	hub create
+	git push -u origin master
 
 
 

@@ -7,10 +7,6 @@
     "BSD-3-Clause",
     "No license file"
   ],
-  "DVC_setting": [
-    "Yes",
-    "No"
-  ],
   "python_interpreter": [
     "3.5",
     "3.6",
