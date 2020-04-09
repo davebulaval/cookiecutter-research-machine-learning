@@ -68,6 +68,7 @@ tests:
 	pytests tests
 
 ## Set up python interpreter environment
+init_venv:
 ifeq (False, $(HAS_VENV))
 	@echo ">>> venv not found, installing through apt"
 	@apt-get install python3-venv
