@@ -1,0 +1,7 @@
+MlFlow:
+  class: src.models.MLflow_logger.LocalMlFlowWriter
+  params:
+    experiment_name: CookiCutterDemo
+    local_path: mlruns
+    batch_granularity: False
+    same_run_logging: True

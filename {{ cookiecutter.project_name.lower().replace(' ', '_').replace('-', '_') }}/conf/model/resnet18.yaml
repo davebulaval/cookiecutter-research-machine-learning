@@ -1,0 +1,4 @@
+model:
+  class: torchvision.models.resnet18
+  params:
+    pretrained: false

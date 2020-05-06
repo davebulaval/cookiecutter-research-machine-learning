@@ -11,18 +11,23 @@ else
 	PYTHON_VERSION={{ cookiecutter.python_interpreter }}
 endif
 
-GIT_REMOTE_URL = {{ cookiecutter.git_remote_url }}
-
-ifeq (,$(shell which conda))
-    HAS_CONDA=False
+ifeq (,$(shell dpkg -l | grep python3-venv))
+	HAS_VENV=False
 else
-    HAS_CONDA=True
+	HAS_VENV=True
 endif
+
 
 ifeq (,$(shell which git))
 	HAS_GIT=False
 else
 	HAS_GIT=True
+endif
+
+ifeq (,$(shell which hub))
+	HAS_HUB=False
+else
+	HAS_HUB=True
 endif
 
 ifeq (,$(shell which dvc))
@@ -33,6 +38,8 @@ endif
 #################################################################################
 # COMMANDS                                                                      #
 #################################################################################
+
+
 
 ## Install Python Dependencies
 requirements: test_environment
@@ -61,44 +68,42 @@ tests:
 	pytests tests
 
 ## Set up python interpreter environment
-init_environment:
-ifeq (True,$(HAS_CONDA))
-	@echo ">>> Detected conda, creating conda environment."
-	@conda create -n $(PROJECT_NAME) python=$(PYTHON_VERSION) msgpack-python pylint anaconda -y -q
-	@conda install pytorch torchvision cudatoolkit=10.1 -c pytorch -y
-	@conda run -n $(PROJECT_NAME) python -m pip install --upgrade pip -q
-	@while read -r requirement; do \
-	    echo $(requirement); \
-	    conda run -n $(PROJECT_NAME) python -m pip install --upgrade "$$requirement" -q; \
-	done < requirements.txt
-else
-	$(error Conda not install.)
+init_venv:
+ifeq (False, $(HAS_VENV))
+	@echo ">>> venv not found, installing through apt"
+	@apt-get install python3-venv
 endif
+
+	python3 -m venv ./venv
+	./venv/bin/python3 -m pip install -U pip setuptools wheel
+	./venv/bin/python3 -m pip install -r requirements.txt
 
 init_git:
-ifeq (True,$(HAS_GIT))
-	@echo ">>> Init of the git repository."
-	@git init -q
-	@git remote add origin $(GIT_REMOTE_URL)
-	@git add .
-	@git commit -m "initial commit"
-	@git push -u origin master
-else
-	$(error Git not install.)
+ifeq (False,$(HAS_GIT))
+	@echo ">>> Git not found, installing through apt"
+	@apt-get install git
+endif
+ifeq (False,$(HAS_HUB))
+	@echo ">>> hub not found, installing through snap"
+	@apt-get install snap
+	@snap install hub
+endif
+ifeq (False, $(HAS_DVC))
+	@echo ">>> DVC not found, installing"
+	@pip3 install dvc
 endif
 
-init_dvc:
-ifeq (True,$(HAS_DVC))
-	@echo ">>> Init of DVC"
-	@dvc init -q
-	@dvc add data/raw -q
-else
-	$(error DVC not install.)
-endif
+	echo ">>> Init of the git and dvc repository."
+	git init -q
+	git add .
+	dvc init -q
+	dvc add data/raw -q
+	git commit -m "initial commit"
+	hub create
+	git push -u origin master
 
-test_remote_url:
-	@echo ">>> Testing remote URL"
-	@git ls-remote $(GIT_REMOTE_URL)
+
+
 
 ## Test python environment is setup correctly
 test_environment:

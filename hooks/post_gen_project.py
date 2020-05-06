@@ -2,27 +2,17 @@
 import subprocess
 import sys
 
-conda_env_creation = True if "{{ cookiecutter.create_conda_env }}" == "Yes" else False
-data_version_control = True if "{{ cookiecutter.DVC_setting }}" == "Yes" else False
+venv_env_creation = True if "{{ cookiecutter.create_python_venv }}" == "Yes" else False
+init_git = True if "{{ cookiecutter.init_git }}" == "Yes" else False
 
-
-try:
-    subprocess.run(["make", "test_remote_url"], check=True)
-except subprocess.CalledProcessError:
-    sys.exit(1)
-
-if conda_env_creation:
+if venv_env_creation:
     try:
-        subprocess.run(["make", "init_environment"], check=True)
+        subprocess.run(["make", "init_venv"], check=True)
     except subprocess.CalledProcessError:
         sys.exit(1)
-try:
-    subprocess.run(["make", "init_git"], check=True)
-except subprocess.CalledProcessError:
-    sys.exit(1)
 
-if data_version_control:
+if init_git:
     try:
-        subprocess.run(["make", "init_dvc"], check=True)
+        subprocess.run(["make", "init_git"], check=True)
     except subprocess.CalledProcessError:
         sys.exit(1)

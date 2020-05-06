@@ -7,10 +7,6 @@
     "BSD-3-Clause",
     "No license file"
   ],
-  "DVC_setting": [
-    "Yes",
-    "No"
-  ],
   "python_interpreter": [
     "3.5",
     "3.6",
@@ -18,9 +14,12 @@
     "3.8",
     "newest"
   ],
-  "create_conda_env": [
+  "create_python_venv": [
     "Yes",
     "No"
   ],
-  "git_remote_url": "Git remote URL to set the repository. *Must be an empty repository!*"
+  "init_git": [
+    "Yes",
+    "No"	
+  ]
 }
