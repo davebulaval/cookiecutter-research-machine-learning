@@ -13,3 +13,4 @@ hydra-colorlog
 torch
 torchvision
 dvc
+wandb
